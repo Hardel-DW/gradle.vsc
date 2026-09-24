@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/setup@v3
+        with:
+          runtime: node@24
+          cache: true
+          require-lockfile: true
+      - run: pnpm package
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          gh release create "v$version-build.$GITHUB_RUN_NUMBER" *.vsix \
+            --target "$GITHUB_SHA" \
+            --title "v$version build $GITHUB_RUN_NUMBER" \
+            --notes "Install: Extensions tab, ... menu at the top, Install from VSIX..., then pick the downloaded file."
