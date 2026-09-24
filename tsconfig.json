@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ES2024",
+		"lib": ["ES2024"],
+		"types": ["node", "vscode"],
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"rewriteRelativeImportExtensions": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"rootDir": "src",
+		"outDir": "dist",
+		"sourceMap": true,
+		"newLine": "LF",
+		"skipLibCheck": true
+	},
+	"include": ["src"]
+}

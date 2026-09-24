@@ -1,0 +1,197 @@
+{
+	"name": "gradle-tasks",
+	"displayName": "Gradle Tasks",
+	"description": "Lists and runs the Gradle tasks of every build in the workspace.",
+	"version": "0.1.0",
+	"publisher": "hardel",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Hardel-DW/gradle.vsc"
+	},
+	"private": true,
+	"type": "module",
+	"main": "./dist/extension.js",
+	"engines": {
+		"vscode": "^1.139.0"
+	},
+	"categories": ["Other"],
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc --watch",
+		"check": "tsc --noEmit",
+		"package": "pnpm build && pnpm dlx @vscode/vsce package --no-dependencies",
+		"biome:format": "biome format --write ./src",
+		"biome:check": "biome check ./src",
+		"biome:unsafefix": "biome check --write --unsafe ./src"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.14",
+		"@types/node": "^24.12.4",
+		"@types/vscode": "^1.138.0",
+		"typescript": "^7.0.2"
+	},
+	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "gradle",
+					"title": "Gradle",
+					"icon": "resources/gradle.png"
+				}
+			]
+		},
+		"views": {
+			"gradle": [
+				{
+					"id": "gradleTasks",
+					"name": "Gradle Projects",
+					"icon": "resources/gradle.png"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "gradleTasks",
+				"contents": "No Gradle build found in the workspace."
+			}
+		],
+		"taskDefinitions": [
+			{
+				"type": "gradleTasks",
+				"required": ["build", "task"],
+				"properties": {
+					"build": {
+						"type": "string",
+						"description": "Directory of the Gradle build."
+					},
+					"task": {
+						"type": "string",
+						"description": "Full path of the task, for example :fabric:runClient."
+					},
+					"args": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Extra Gradle arguments."
+					}
+				}
+			}
+		],
+		"commands": [
+			{
+				"command": "gradleTasks.reload",
+				"title": "Reload",
+				"category": "Gradle",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "gradleTasks.showHidden",
+				"title": "Show Hidden Projects",
+				"category": "Gradle",
+				"icon": "$(eye-closed)"
+			},
+			{
+				"command": "gradleTasks.hideHidden",
+				"title": "Hide Hidden Projects",
+				"category": "Gradle",
+				"icon": "$(eye)"
+			},
+			{
+				"command": "gradleTasks.hide",
+				"title": "Hide"
+			},
+			{
+				"command": "gradleTasks.unhide",
+				"title": "Unhide"
+			},
+			{
+				"command": "gradleTasks.run",
+				"title": "Run Task",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "gradleTasks.debug",
+				"title": "Debug Task",
+				"icon": {
+					"light": "resources/light/debug-and-run.svg",
+					"dark": "resources/dark/debug-and-run.svg"
+				}
+			}
+		],
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "gradleTasks.hide",
+					"when": "false"
+				},
+				{
+					"command": "gradleTasks.unhide",
+					"when": "false"
+				},
+				{
+					"command": "gradleTasks.run",
+					"when": "false"
+				},
+				{
+					"command": "gradleTasks.debug",
+					"when": "false"
+				}
+			],
+			"view/title": [
+				{
+					"command": "gradleTasks.showHidden",
+					"when": "view == gradleTasks && !gradleTasks.showingHidden",
+					"group": "navigation@0"
+				},
+				{
+					"command": "gradleTasks.hideHidden",
+					"when": "view == gradleTasks && gradleTasks.showingHidden",
+					"group": "navigation@0"
+				},
+				{
+					"command": "gradleTasks.reload",
+					"when": "view == gradleTasks",
+					"group": "navigation@1"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "gradleTasks.debug",
+					"when": "view == gradleTasks && viewItem == debuggableTask",
+					"group": "inline@0"
+				},
+				{
+					"command": "gradleTasks.run",
+					"when": "view == gradleTasks && viewItem =~ /^(debuggableTask|task)$/",
+					"group": "inline@1"
+				},
+				{
+					"command": "gradleTasks.run",
+					"when": "view == gradleTasks && viewItem =~ /^(debuggableTask|task)$/",
+					"group": "run@0"
+				},
+				{
+					"command": "gradleTasks.debug",
+					"when": "view == gradleTasks && viewItem == debuggableTask",
+					"group": "run@1"
+				},
+				{
+					"command": "gradleTasks.hide",
+					"when": "view == gradleTasks && viewItem == project"
+				},
+				{
+					"command": "gradleTasks.unhide",
+					"when": "view == gradleTasks && viewItem == hiddenProject"
+				}
+			]
+		}
+	}
+}

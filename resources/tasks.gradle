@@ -1,0 +1,18 @@
+import groovy.json.JsonOutput
+
+def describe(Project project) {
+    [
+        path: project.path,
+        name: project.name,
+        buildFile: project.buildFile.path,
+        tasks: project.tasks.collect { task ->
+            [name: task.name, group: task.group, description: task.description, debuggable: task instanceof JavaExec || task instanceof Test]
+        },
+        children: project.childProjects.values().collect { describe(it) }
+    ]
+}
+
+gradle.projectsEvaluated {
+    if (gradle.parent != null) return
+    println "GRADLE_TASKS_JSON " + JsonOutput.toJson(describe(gradle.rootProject))
+}
